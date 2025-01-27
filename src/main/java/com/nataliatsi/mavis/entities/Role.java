@@ -1,13 +1,12 @@
 package com.nataliatsi.mavis.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 
 @Entity
 @Table(name = "tb_roles")
 @Getter
-public class Roles {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")

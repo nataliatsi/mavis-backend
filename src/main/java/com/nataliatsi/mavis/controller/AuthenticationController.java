@@ -1,13 +1,15 @@
 package com.nataliatsi.mavis.controller;
 
 import com.nataliatsi.mavis.security.AuthenticationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -16,8 +18,10 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("/login")
-    public String authenticate(Authentication authentication){
-        return authenticationService.authenticate(authentication);
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticate(Authentication authentication) {
+        String token = authenticationService.authenticate(authentication);
+        return ResponseEntity.ok(Map.of("token", token));
     }
+
 }
