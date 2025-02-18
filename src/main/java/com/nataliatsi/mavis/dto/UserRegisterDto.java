@@ -10,8 +10,8 @@ public record UserRegisterDto(
         @Size(min = 4, max = 20, message = "O username deve ter entre 4 e 20 caracteres")
         String username,
 
-        @NotBlank(message = "Email is required")
-        @Email(message = "Invalid email format")
+        @NotBlank(message = "Email é obrigatório")
+        @Email(message = "Formato de email inválido")
         String email,
 
         @NotBlank(message = "A senha não pode ser vazia ou nula")
