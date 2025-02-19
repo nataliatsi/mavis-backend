@@ -7,13 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/profiles")
+@RequestMapping("/api/users/profiles")
 public class ProfileController {
 
     private final ProfileService userProfileService;
@@ -23,7 +20,7 @@ public class ProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<Profile> registerUser(
+    public ResponseEntity<Profile> registerUserProfile(
             @Valid @RequestBody CreateProfileDto dataUserRegister,
             Authentication authentication) {
 

@@ -17,9 +17,6 @@ public class JwtService {
 
     private final JwtEncoder encoder;
 
-    @Value("${jwt.issuer.name}")
-    private String issuerName;
-
     public JwtService(JwtEncoder encoder) {
         this.encoder = encoder;
     }
@@ -34,7 +31,7 @@ public class JwtService {
                 .collect(Collectors.joining(" "));
 
         var claims = JwtClaimsSet.builder()
-                .issuer(issuerName)
+                .issuer("mavis-backend")
                 .issuedAt(now)
                 .expiresAt(now.plus(Duration.ofSeconds(expiry)))
                 .subject(authentication.getName())

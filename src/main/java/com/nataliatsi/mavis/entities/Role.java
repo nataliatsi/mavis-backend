@@ -1,11 +1,12 @@
 package com.nataliatsi.mavis.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 
 @Entity
 @Table(name = "tb_roles")
-@Getter
+@Data
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,14 +14,14 @@ public class Role {
     private Long roleId;
     private String name;
 
-
+    @Getter
     public enum Values {
         ADMIN(1L),
         BASIC(2L);
 
-        final Long roleId;
+        final long roleId;
 
-        Values(Long roleId){
+        Values(long roleId){
             this.roleId = roleId;
         }
 

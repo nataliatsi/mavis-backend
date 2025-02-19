@@ -46,9 +46,8 @@ public class ProfileService {
                 .toList();
         newProfile.setEmergencyContacts(emergencyContacts);
 
-        newProfile = profileRepository.save(newProfile);
-        return newProfile;
-
+        return profileRepository.save(newProfile);
     }
+
 
 }

@@ -35,6 +35,11 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(userRegisterDto.password());
         Role basicRole = roleRepository.findByName(Role.Values.BASIC.name());
 
+        if (basicRole == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role BASIC não encontrada");
+        }
+        System.out.println("Role encontrada: " + basicRole.getName());
+
         var userFromDb = userRepository.findByUsername(userRegisterDto.username());
         if(userFromDb.isPresent()){
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -42,10 +47,7 @@ public class UserService {
 
         User user = userMapper.toUser(userRegisterDto);
         user.setPassword(encryptedPassword);
-
-        Set<Role> roles = new HashSet<>();
-        roles.add(basicRole);
-        user.setRoles(roles);
+        user.setRoles(Set.of(basicRole));
 
         user = userRepository.save(user);
 
