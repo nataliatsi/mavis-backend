@@ -3,6 +3,7 @@ package com.nataliatsi.mavis.user.profile.service;
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.UserRepository;
 import com.nataliatsi.mavis.user.profile.dto.CreateProfileDto;
+import com.nataliatsi.mavis.user.profile.dto.GetProfileDto;
 import com.nataliatsi.mavis.user.profile.entities.EmergencyContact;
 import com.nataliatsi.mavis.user.profile.entities.Profile;
 import com.nataliatsi.mavis.user.profile.mappers.ProfileMapper;
@@ -52,6 +53,14 @@ public class ProfileService {
         userRepository.save(user);
 
         return newProfile;
+    }
+
+    public GetProfileDto getUserProfile(Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
+
+        return profileMapper.toDTO(user.getUserProfile());
     }
 
 }

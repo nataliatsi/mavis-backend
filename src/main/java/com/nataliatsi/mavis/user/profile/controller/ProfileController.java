@@ -1,6 +1,7 @@
 package com.nataliatsi.mavis.user.profile.controller;
 
 import com.nataliatsi.mavis.user.profile.dto.CreateProfileDto;
+import com.nataliatsi.mavis.user.profile.dto.GetProfileDto;
 import com.nataliatsi.mavis.user.profile.entities.Profile;
 import com.nataliatsi.mavis.user.profile.service.ProfileService;
 import jakarta.validation.Valid;
@@ -28,4 +29,19 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getUserProfile(Authentication authentication) {
+        try {
+            GetProfileDto userProfileDTO = userProfileService.getUserProfile(authentication);
+            if (userProfileDTO != null) {
+                return ResponseEntity.ok(userProfileDTO);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Perfil não encontrado");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno no servidor: " + e.getMessage());
+        }
+    }
 }
