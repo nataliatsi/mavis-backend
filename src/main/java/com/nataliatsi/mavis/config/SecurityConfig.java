@@ -19,6 +19,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -39,7 +41,7 @@ public class SecurityConfig {
     public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/signin")
+                .securityMatcher("/api/login")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 
@@ -52,13 +54,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signup").permitAll()
+                        .requestMatchers("/api/users").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
+
+
 
 
     @Bean
