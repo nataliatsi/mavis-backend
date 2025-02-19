@@ -44,5 +44,4 @@ public class Address {
     @JsonBackReference
     private Profile Profile;
 
-
 }
