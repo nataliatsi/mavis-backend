@@ -12,7 +12,6 @@ public record GetProfileDto(
         String fullName,
         LocalDate dateOfBirth,
         String phoneNumber,
-        String email,
         AddressDto address,
         List<EmergencyContact> emergencyContacts,
         List<MedicalHistory> medicalHistory
