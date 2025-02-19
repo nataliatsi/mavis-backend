@@ -28,9 +28,8 @@ public class ProfileService {
         this.profileMapper = profileMapper;
     }
 
-
     @Transactional
-    public Profile createUserProfile (CreateProfileDto dto, Authentication authentication){
+    public Profile createUserProfile(CreateProfileDto dto, Authentication authentication){
         if(dto == null){
             throw new IllegalArgumentException("Dados do usuário são obrigatórios");
         }
@@ -38,6 +37,7 @@ public class ProfileService {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
+
         Profile newProfile = profileMapper.toUserProfile(dto);
         newProfile.setUser(user);
 
@@ -46,8 +46,12 @@ public class ProfileService {
                 .toList();
         newProfile.setEmergencyContacts(emergencyContacts);
 
-        return profileRepository.save(newProfile);
-    }
+        Profile savedProfile = profileRepository.save(newProfile);
 
+        user.setUserProfile(savedProfile);
+        userRepository.save(user);
+
+        return newProfile;
+    }
 
 }
