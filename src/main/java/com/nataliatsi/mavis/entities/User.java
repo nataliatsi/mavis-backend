@@ -1,5 +1,6 @@
 package com.nataliatsi.mavis.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nataliatsi.mavis.user.profile.entities.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,12 +31,13 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user")
+    @JsonBackReference
     private Profile userProfile;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(
-                name = "tb_users_roles",
+            name = "tb_users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

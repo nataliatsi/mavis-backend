@@ -1,5 +1,6 @@
 package com.nataliatsi.mavis.user.profile.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nataliatsi.mavis.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,8 @@ public class Profile {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "full_name", nullable = false)
@@ -31,9 +32,6 @@ public class Profile {
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
-
-    @Column(name = "health_card_number", unique = true)
-    private String healthCardNumber;
 
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
