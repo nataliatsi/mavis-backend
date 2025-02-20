@@ -2,8 +2,11 @@ package com.nataliatsi.mavis.user.profile.service;
 
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.UserRepository;
+import com.nataliatsi.mavis.user.profile.dto.AddressDto;
 import com.nataliatsi.mavis.user.profile.dto.CreateProfileDto;
 import com.nataliatsi.mavis.user.profile.dto.GetProfileDto;
+import com.nataliatsi.mavis.user.profile.dto.UpdateProfileDto;
+import com.nataliatsi.mavis.user.profile.entities.Address;
 import com.nataliatsi.mavis.user.profile.entities.EmergencyContact;
 import com.nataliatsi.mavis.user.profile.entities.Profile;
 import com.nataliatsi.mavis.user.profile.mappers.ProfileMapper;
@@ -35,9 +38,7 @@ public class ProfileService {
             throw new IllegalArgumentException("Dados do usuário são obrigatórios");
         }
 
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
+        var user = findUser(authentication);
 
         Profile newProfile = profileMapper.toUserProfile(dto);
         newProfile.setUser(user);
@@ -56,11 +57,43 @@ public class ProfileService {
     }
 
     public GetProfileDto getUserProfile(Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
-
+        var user = findUser(authentication);
         return profileMapper.toDTO(user.getUserProfile());
+    }
+
+    @Transactional
+    public void updateUserProfile(UpdateProfileDto dto, Authentication authentication){
+        var userProfile = findUser(authentication).getUserProfile();
+
+        if(dto.fullName() != null){
+            userProfile.setFullName(dto.fullName());
+
+        }
+        if(dto.dateOfBirth() != null){
+            userProfile.setDateOfBirth(dto.dateOfBirth());
+        }
+        if(dto.phoneNumber() != null){
+            userProfile.setPhoneNumber(dto.phoneNumber());
+        }
+
+        profileRepository.save(userProfile);
+    }
+
+    @Transactional
+    public Profile updateAddress(AddressDto addressDTO, Authentication authentication) {
+        Profile userProfile = findUser(authentication).getUserProfile();
+
+        Address address = profileMapper.toAddress(addressDTO);
+        userProfile.setAddress(address);
+        userProfile = profileRepository.save(userProfile);
+        return userProfile;
+    }
+
+    private User findUser(Authentication authentication){
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
     }
 
 }

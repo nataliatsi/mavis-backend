@@ -1,6 +1,5 @@
 package com.nataliatsi.mavis.user.profile.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nataliatsi.mavis.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
