@@ -26,16 +26,18 @@ public class MedicalHistoryService {
     private final MedicalHistoryRepository historyRepository;
     private final UserRepository userRepository;
     private final MedicalHistoryMapper historyMapper;
+    private final FindUser findUser;
 
-    public MedicalHistoryService(ProfileRepository userProfileRepository, MedicalHistoryRepository historyRepository, UserRepository userRepository, MedicalHistoryMapper historyMapper) {
+    public MedicalHistoryService(ProfileRepository userProfileRepository, MedicalHistoryRepository historyRepository, UserRepository userRepository, MedicalHistoryMapper historyMapper, FindUser findUser) {
         this.userProfileRepository = userProfileRepository;
         this.historyRepository = historyRepository;
         this.userRepository = userRepository;
         this.historyMapper = historyMapper;
+        this.findUser = findUser;
     }
 
     public List<GetMedicalHistoryDto> getAllMedicalHistory(Authentication authentication) {
-        var userId = findUser(authentication).getUserProfile().getId();
+        var userId = findUser.getAuthenticatedUser(authentication).getUserProfile().getId();
 
         List<MedicalHistory> medicalHistory = userProfileRepository.findMedicalHistoryByUserId(userId);
         return medicalHistory.stream().map(historyMapper::toReturnDTO).collect(Collectors.toList());
@@ -44,7 +46,7 @@ public class MedicalHistoryService {
     @Transactional
     public MedicalHistory create(CreateMedicalHistoryDto medicalHistoryVersionDTO, Authentication authentication) {
 
-        Profile userProfile =  findUser(authentication).getUserProfile();
+        Profile userProfile =  findUser.getAuthenticatedUser(authentication).getUserProfile();
 
         var teste = userProfile.getId();
         System.out.println(teste);
@@ -66,13 +68,6 @@ public class MedicalHistoryService {
         userProfileRepository.save(userProfile);
 
         return newMedicalHistory;
-    }
-
-    private User findUser(Authentication authentication){
-        String username = authentication.getName();
-
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
     }
 
 }

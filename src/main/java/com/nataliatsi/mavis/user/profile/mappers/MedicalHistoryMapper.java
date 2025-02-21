@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public interface MedicalHistoryMapper {
 
     MedicalHistory toEntity(CreateMedicalHistoryDto dto);
-    CreateMedicalHistoryDto toDTO(MedicalHistory entity);
 
     GetMedicalHistoryDto toReturnDTO(MedicalHistory dto);
 

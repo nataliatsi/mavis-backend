@@ -25,11 +25,13 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
     private final ProfileMapper profileMapper;
+    private final FindUser findUser;
 
-    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository, ProfileMapper profileMapper) {
+    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository, ProfileMapper profileMapper, FindUser findUser) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
         this.profileMapper = profileMapper;
+        this.findUser = findUser;
     }
 
     @Transactional
@@ -38,7 +40,7 @@ public class ProfileService {
             throw new IllegalArgumentException("Dados do usuário são obrigatórios");
         }
 
-        var user = findUser(authentication);
+        var user = findUser.getAuthenticatedUser(authentication);
 
         Profile newProfile = profileMapper.toUserProfile(dto);
         newProfile.setUser(user);
@@ -57,13 +59,13 @@ public class ProfileService {
     }
 
     public GetProfileDto getUserProfile(Authentication authentication) {
-        var user = findUser(authentication);
+        var user = findUser.getAuthenticatedUser(authentication);
         return profileMapper.toDTO(user.getUserProfile());
     }
 
     @Transactional
     public void updateUserProfile(UpdateProfileDto dto, Authentication authentication){
-        var userProfile = findUser(authentication).getUserProfile();
+        var userProfile = findUser.getAuthenticatedUser(authentication).getUserProfile();
 
         if(dto.fullName() != null){
             userProfile.setFullName(dto.fullName());
@@ -81,19 +83,12 @@ public class ProfileService {
 
     @Transactional
     public Profile updateAddress(AddressDto addressDTO, Authentication authentication) {
-        Profile userProfile = findUser(authentication).getUserProfile();
+        Profile userProfile = findUser.getAuthenticatedUser(authentication).getUserProfile();
 
         Address address = profileMapper.toAddress(addressDTO);
         userProfile.setAddress(address);
         userProfile = profileRepository.save(userProfile);
         return userProfile;
-    }
-
-    private User findUser(Authentication authentication){
-        String username = authentication.getName();
-
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado"));
     }
 
 }
