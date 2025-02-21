@@ -41,12 +41,8 @@ public class MedicalHistoryService {
         return medicalHistory.stream().map(historyMapper::toReturnDTO).collect(Collectors.toList());
     }
 
-
     @Transactional
     public MedicalHistory create(CreateMedicalHistoryDto medicalHistoryVersionDTO, Authentication authentication) {
-
-//        String username = authentication.getName();
-//        var user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         Profile userProfile =  findUser(authentication).getUserProfile();
 

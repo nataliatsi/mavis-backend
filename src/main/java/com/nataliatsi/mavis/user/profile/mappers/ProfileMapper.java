@@ -13,5 +13,6 @@ public interface ProfileMapper {
     Address toAddress(AddressDto addressDTO);
     EmergencyContact toEmergencyContact(EmergencyContactDto emergencyContactDTO);
     EmergencyContactDto toEmergencyContactDTO(EmergencyContact emergencyContact);
+    GetEmergencyContactDto toGetEmergencyContactDTO(EmergencyContact emergencyContact);
     Location toLocation(LocationDto locationDTO);
 }

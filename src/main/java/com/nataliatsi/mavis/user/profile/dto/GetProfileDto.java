@@ -13,7 +13,7 @@ public record GetProfileDto(
         LocalDate dateOfBirth,
         String phoneNumber,
         AddressDto address,
-        List<EmergencyContact> emergencyContacts,
-        List<MedicalHistory> medicalHistory
+        List<GetEmergencyContactDto> emergencyContacts,
+        List<GetMedicalHistoryDto> medicalHistory
 ) {}
 
