@@ -49,5 +49,5 @@ public class Profile {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.EAGER)
     @JoinColumn(name = "user_profile_id")
-    private List<MedicalHistory> medicalHistoryVersions = new ArrayList<>();
+    private List<MedicalHistory> medicalHistory = new ArrayList<>();
 }
