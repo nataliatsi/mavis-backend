@@ -50,7 +50,7 @@ server.error.include-stacktrace=never
 
 ## 3. Executar o Docker Compose
 
-Execute o Docker Compose para iniciar o PostgreSQL. O arquivo `docker/compose.yml` deve ser configurado da seguinte maneira:
+Execute o Docker Compose para iniciar o PostgreSQL. O arquivo `compose.yml` deve ser configurado da seguinte maneira:
 
 ```yaml
 services:
@@ -69,7 +69,7 @@ services:
 Após configurar o Docker Compose, execute o comando para subir os serviços:
 
 ```bash
-$ docker-compose -f docker/compose.yml up -d
+$ docker-compose up -d
 ```
 
 Para verificar se o PostgreSQL está funcionando corretamente, você pode executar:
