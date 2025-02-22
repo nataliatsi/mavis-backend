@@ -5,14 +5,19 @@ import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
 import com.nataliatsi.mavis.service.UserService;
+import com.nataliatsi.mavis.user.profile.dto.CreateProfileDto;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
@@ -20,13 +25,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> register(@Valid @RequestBody UserRegisterDto userRegisterDto) {
+    @PostMapping
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDto userRegisterDto) {
         try {
             User user = userService.registerUser(userRegisterDto);
-            return ResponseEntity.ok("User registered successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error registering user: " + e.getMessage());
         }
     }
+
 }
