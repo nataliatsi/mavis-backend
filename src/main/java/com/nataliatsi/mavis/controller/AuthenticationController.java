@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/login")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -18,7 +19,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("/signin")
+    @PostMapping
     public ResponseEntity<?> authenticate(Authentication authentication) {
         String token = authenticationService.authenticate(authentication);
         return ResponseEntity.ok(Map.of("token", token));
