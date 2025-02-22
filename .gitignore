@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### Ignorar o arquivo de configuração sensível ###
-src/main/resources/application.properties
+# src/main/resources/application.properties
 
 src/main/resources/app.key
 src/main/resources/app.pub
