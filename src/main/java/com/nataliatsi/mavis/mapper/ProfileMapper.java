@@ -18,4 +18,5 @@ public interface ProfileMapper {
     EmergencyContactDto toEmergencyContactDTO(EmergencyContact emergencyContact);
     GetEmergencyContactDto toGetEmergencyContactDTO(EmergencyContact emergencyContact);
     Location toLocation(LocationDto locationDTO);
+    LocationDto toLocationDTO(Location location);
 }
