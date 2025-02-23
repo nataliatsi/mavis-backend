@@ -1,10 +1,10 @@
-package com.nataliatsi.mavis.user.profile.controller;
+package com.nataliatsi.mavis.controller;
 
-import com.nataliatsi.mavis.user.profile.dto.EmergencyContactDto;
-import com.nataliatsi.mavis.user.profile.dto.GetEmergencyContactDto;
-import com.nataliatsi.mavis.user.profile.dto.UpdateEmergencyContactDto;
-import com.nataliatsi.mavis.user.profile.entities.EmergencyContact;
-import com.nataliatsi.mavis.user.profile.service.EmergencyContactService;
+import com.nataliatsi.mavis.dto.EmergencyContactDto;
+import com.nataliatsi.mavis.dto.GetEmergencyContactDto;
+import com.nataliatsi.mavis.dto.UpdateEmergencyContactDto;
+import com.nataliatsi.mavis.entities.EmergencyContact;
+import com.nataliatsi.mavis.service.EmergencyContactService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

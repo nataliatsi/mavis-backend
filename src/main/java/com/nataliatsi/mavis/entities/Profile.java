@@ -1,6 +1,5 @@
-package com.nataliatsi.mavis.user.profile.entities;
+package com.nataliatsi.mavis.entities;
 
-import com.nataliatsi.mavis.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

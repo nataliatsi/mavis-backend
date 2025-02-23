@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.user.profile.entities;
+package com.nataliatsi.mavis.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

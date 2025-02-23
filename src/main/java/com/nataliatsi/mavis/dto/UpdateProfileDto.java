@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.user.profile.dto;
+package com.nataliatsi.mavis.dto;
 
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;

@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.user.profile.dto;
+package com.nataliatsi.mavis.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +17,7 @@ public record EmergencyContactDto(
         @Pattern(regexp = "^\\+?\\d{10,15}$", message = "Número de telefone inválido")
         String phoneNumber,
 
+        @NotBlank(message = "Email do contato de emergência é obrigatório")
         @Email(message = "Email deve ser válido")
         String email
 ) {

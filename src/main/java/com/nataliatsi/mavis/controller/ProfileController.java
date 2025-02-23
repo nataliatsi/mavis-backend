@@ -1,11 +1,11 @@
-package com.nataliatsi.mavis.user.profile.controller;
+package com.nataliatsi.mavis.controller;
 
-import com.nataliatsi.mavis.user.profile.dto.AddressDto;
-import com.nataliatsi.mavis.user.profile.dto.CreateProfileDto;
-import com.nataliatsi.mavis.user.profile.dto.GetProfileDto;
-import com.nataliatsi.mavis.user.profile.dto.UpdateProfileDto;
-import com.nataliatsi.mavis.user.profile.entities.Profile;
-import com.nataliatsi.mavis.user.profile.service.ProfileService;
+import com.nataliatsi.mavis.dto.AddressDto;
+import com.nataliatsi.mavis.dto.CreateProfileDto;
+import com.nataliatsi.mavis.dto.GetProfileDto;
+import com.nataliatsi.mavis.dto.UpdateProfileDto;
+import com.nataliatsi.mavis.entities.Profile;
+import com.nataliatsi.mavis.service.ProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

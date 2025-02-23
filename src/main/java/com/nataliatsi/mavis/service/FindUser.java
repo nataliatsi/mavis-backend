@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.user.profile.service;
+package com.nataliatsi.mavis.service;
 
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.UserRepository;

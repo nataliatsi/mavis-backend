@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.user.profile.entities;
+package com.nataliatsi.mavis.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class EmergencyContact {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
 }

@@ -1,7 +1,7 @@
-package com.nataliatsi.mavis.user.profile.repository;
+package com.nataliatsi.mavis.repository;
 
 
-import com.nataliatsi.mavis.user.profile.entities.MedicalHistory;
+import com.nataliatsi.mavis.entities.MedicalHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

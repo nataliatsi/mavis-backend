@@ -1,9 +1,8 @@
-package com.nataliatsi.mavis.user.profile.repository;
+package com.nataliatsi.mavis.repository;
 
-import com.nataliatsi.mavis.entities.User;
-import com.nataliatsi.mavis.user.profile.entities.EmergencyContact;
-import com.nataliatsi.mavis.user.profile.entities.MedicalHistory;
-import com.nataliatsi.mavis.user.profile.entities.Profile;
+import com.nataliatsi.mavis.entities.EmergencyContact;
+import com.nataliatsi.mavis.entities.MedicalHistory;
+import com.nataliatsi.mavis.entities.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,7 +1,10 @@
-package com.nataliatsi.mavis.user.profile.mappers;
+package com.nataliatsi.mavis.mapper;
 
-import com.nataliatsi.mavis.user.profile.dto.*;
-import com.nataliatsi.mavis.user.profile.entities.*;
+import com.nataliatsi.mavis.dto.*;
+import com.nataliatsi.mavis.entities.Address;
+import com.nataliatsi.mavis.entities.EmergencyContact;
+import com.nataliatsi.mavis.entities.Location;
+import com.nataliatsi.mavis.entities.Profile;
 import org.mapstruct.Mapper;
 
 

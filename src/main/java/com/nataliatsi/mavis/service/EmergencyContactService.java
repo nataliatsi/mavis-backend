@@ -1,15 +1,14 @@
-package com.nataliatsi.mavis.user.profile.service;
+package com.nataliatsi.mavis.service;
 
-import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.UserRepository;
-import com.nataliatsi.mavis.user.profile.dto.EmergencyContactDto;
-import com.nataliatsi.mavis.user.profile.dto.GetEmergencyContactDto;
-import com.nataliatsi.mavis.user.profile.dto.UpdateEmergencyContactDto;
-import com.nataliatsi.mavis.user.profile.entities.EmergencyContact;
-import com.nataliatsi.mavis.user.profile.entities.Profile;
-import com.nataliatsi.mavis.user.profile.mappers.ProfileMapper;
-import com.nataliatsi.mavis.user.profile.repository.EmergencyContactRepository;
-import com.nataliatsi.mavis.user.profile.repository.ProfileRepository;
+import com.nataliatsi.mavis.dto.EmergencyContactDto;
+import com.nataliatsi.mavis.dto.GetEmergencyContactDto;
+import com.nataliatsi.mavis.dto.UpdateEmergencyContactDto;
+import com.nataliatsi.mavis.entities.EmergencyContact;
+import com.nataliatsi.mavis.entities.Profile;
+import com.nataliatsi.mavis.mapper.ProfileMapper;
+import com.nataliatsi.mavis.repository.EmergencyContactRepository;
+import com.nataliatsi.mavis.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

@@ -1,19 +1,16 @@
-package com.nataliatsi.mavis.user.profile.service;
+package com.nataliatsi.mavis.service;
 
-import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.UserRepository;
-import com.nataliatsi.mavis.user.profile.dto.CreateMedicalHistoryDto;
-import com.nataliatsi.mavis.user.profile.dto.GetMedicalHistoryDto;
-import com.nataliatsi.mavis.user.profile.entities.MedicalHistory;
-import com.nataliatsi.mavis.user.profile.entities.Profile;
-import com.nataliatsi.mavis.user.profile.mappers.MedicalHistoryMapper;
-import com.nataliatsi.mavis.user.profile.repository.MedicalHistoryRepository;
-import com.nataliatsi.mavis.user.profile.repository.ProfileRepository;
+import com.nataliatsi.mavis.dto.CreateMedicalHistoryDto;
+import com.nataliatsi.mavis.dto.GetMedicalHistoryDto;
+import com.nataliatsi.mavis.entities.MedicalHistory;
+import com.nataliatsi.mavis.entities.Profile;
+import com.nataliatsi.mavis.mapper.MedicalHistoryMapper;
+import com.nataliatsi.mavis.repository.MedicalHistoryRepository;
+import com.nataliatsi.mavis.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;

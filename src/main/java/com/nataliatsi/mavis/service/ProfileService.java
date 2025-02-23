@@ -1,21 +1,18 @@
-package com.nataliatsi.mavis.user.profile.service;
+package com.nataliatsi.mavis.service;
 
-import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.repository.UserRepository;
-import com.nataliatsi.mavis.user.profile.dto.AddressDto;
-import com.nataliatsi.mavis.user.profile.dto.CreateProfileDto;
-import com.nataliatsi.mavis.user.profile.dto.GetProfileDto;
-import com.nataliatsi.mavis.user.profile.dto.UpdateProfileDto;
-import com.nataliatsi.mavis.user.profile.entities.Address;
-import com.nataliatsi.mavis.user.profile.entities.EmergencyContact;
-import com.nataliatsi.mavis.user.profile.entities.Profile;
-import com.nataliatsi.mavis.user.profile.mappers.ProfileMapper;
-import com.nataliatsi.mavis.user.profile.repository.ProfileRepository;
+import com.nataliatsi.mavis.dto.AddressDto;
+import com.nataliatsi.mavis.dto.CreateProfileDto;
+import com.nataliatsi.mavis.dto.GetProfileDto;
+import com.nataliatsi.mavis.dto.UpdateProfileDto;
+import com.nataliatsi.mavis.entities.Address;
+import com.nataliatsi.mavis.entities.EmergencyContact;
+import com.nataliatsi.mavis.entities.Profile;
+import com.nataliatsi.mavis.mapper.ProfileMapper;
+import com.nataliatsi.mavis.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 

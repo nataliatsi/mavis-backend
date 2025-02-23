@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.user.profile.dto;
+package com.nataliatsi.mavis.dto;
 
 public record GetEmergencyContactDto(
         Long id,

@@ -1,8 +1,8 @@
-package com.nataliatsi.mavis.user.profile.mappers;
+package com.nataliatsi.mavis.mapper;
 
-import com.nataliatsi.mavis.user.profile.dto.CreateMedicalHistoryDto;
-import com.nataliatsi.mavis.user.profile.dto.GetMedicalHistoryDto;
-import com.nataliatsi.mavis.user.profile.entities.MedicalHistory;
+import com.nataliatsi.mavis.dto.CreateMedicalHistoryDto;
+import com.nataliatsi.mavis.dto.GetMedicalHistoryDto;
+import com.nataliatsi.mavis.entities.MedicalHistory;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;

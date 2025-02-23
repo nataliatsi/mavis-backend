@@ -1,9 +1,9 @@
-package com.nataliatsi.mavis.user.profile.controller;
+package com.nataliatsi.mavis.controller;
 
-import com.nataliatsi.mavis.user.profile.dto.CreateMedicalHistoryDto;
-import com.nataliatsi.mavis.user.profile.dto.GetMedicalHistoryDto;
-import com.nataliatsi.mavis.user.profile.entities.MedicalHistory;
-import com.nataliatsi.mavis.user.profile.service.MedicalHistoryService;
+import com.nataliatsi.mavis.dto.CreateMedicalHistoryDto;
+import com.nataliatsi.mavis.dto.GetMedicalHistoryDto;
+import com.nataliatsi.mavis.entities.MedicalHistory;
+import com.nataliatsi.mavis.service.MedicalHistoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
