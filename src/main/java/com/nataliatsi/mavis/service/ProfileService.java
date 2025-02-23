@@ -88,4 +88,16 @@ public class ProfileService {
         return userProfile;
     }
 
+    @Transactional
+    public void deleteUserProfile(Authentication authentication) {
+        var user = findUser.getAuthenticatedUser(authentication);
+        var userProfile = user.getUserProfile();
+
+        if (userProfile != null) {
+            profileRepository.delete(userProfile); 
+        } else {
+            throw new IllegalArgumentException("Perfil não encontrado para o usuário");
+        }
+    }
+
 }

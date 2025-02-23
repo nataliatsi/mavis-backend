@@ -73,4 +73,19 @@ public class ProfileController {
         }
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserProfile(Authentication authentication) {
+        try {
+            userProfileService.deleteUserProfile(authentication);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Erro: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno no servidor: " + e.getMessage());
+        }
+    }
+
+
 }
