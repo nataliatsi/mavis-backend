@@ -46,6 +46,14 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 # Configuração do Servidor (opcional)
 server.error.include-stacktrace=never
+
+# Configuração do Servidor de Email
+spring.mail.host=${MAIL_HOST}
+spring.mail.port=${MAIL_PORT}
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
 ```
 
 ## 3. Executar o Docker Compose
@@ -78,19 +86,6 @@ Para verificar se o PostgreSQL está funcionando corretamente, você pode execut
 $ docker-compose ps
 ```
 
-E para testar a conexão com o banco de dados, use:
-
-```bash
-$ psql -h localhost -U postgres -d mavis
-```
-
-## 4. Executar a Aplicação Spring
-
-Agora, execute a aplicação Spring Boot:
-
-```bash
-$ ./gradlew bootRun
-```
 
 
 
