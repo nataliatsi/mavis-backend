@@ -61,31 +61,24 @@ public class ProfileService {
     }
 
     @Transactional
-    public void updateUserProfile(UpdateProfileDto dto, Authentication authentication){
+    public void updateUserProfile(UpdateProfileDto dto, Authentication authentication) {
         var userProfile = findUser.getAuthenticatedUser(authentication).getUserProfile();
 
-        if(dto.fullName() != null){
+        if (dto.fullName() != null) {
             userProfile.setFullName(dto.fullName());
-
         }
-        if(dto.dateOfBirth() != null){
+        if (dto.dateOfBirth() != null) {
             userProfile.setDateOfBirth(dto.dateOfBirth());
         }
-        if(dto.phoneNumber() != null){
+        if (dto.phoneNumber() != null) {
             userProfile.setPhoneNumber(dto.phoneNumber());
+        }
+        if (dto.address() != null) {
+            Address address = profileMapper.toAddress(dto.address());
+            userProfile.setAddress(address);
         }
 
         profileRepository.save(userProfile);
-    }
-
-    @Transactional
-    public Profile updateAddress(AddressDto addressDTO, Authentication authentication) {
-        Profile userProfile = findUser.getAuthenticatedUser(authentication).getUserProfile();
-
-        Address address = profileMapper.toAddress(addressDTO);
-        userProfile.setAddress(address);
-        userProfile = profileRepository.save(userProfile);
-        return userProfile;
     }
 
     @Transactional
@@ -94,7 +87,7 @@ public class ProfileService {
         var userProfile = user.getUserProfile();
 
         if (userProfile != null) {
-            profileRepository.delete(userProfile); 
+            profileRepository.delete(userProfile);
         } else {
             throw new IllegalArgumentException("Perfil não encontrado para o usuário");
         }
