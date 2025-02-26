@@ -60,19 +60,6 @@ public class ProfileController {
         }
     }
 
-    @PutMapping("/address")
-    public ResponseEntity<?> updateAddress(
-            @RequestBody @Valid AddressDto addressDTO,
-            Authentication authentication) {
-        try {
-            Profile updatedUserProfile = userProfileService.updateAddress( addressDTO, authentication);
-            return ResponseEntity.ok(updatedUserProfile);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Erro interno no servidor: " + e.getMessage());
-        }
-    }
-
     @DeleteMapping
     public ResponseEntity<?> deleteUserProfile(Authentication authentication) {
         try {
