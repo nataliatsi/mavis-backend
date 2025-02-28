@@ -1,7 +1,6 @@
 package com.nataliatsi.mavis.service;
 
 import com.nataliatsi.mavis.dto.LocationDto;
-import com.nataliatsi.mavis.entities.Profile;
 import com.nataliatsi.mavis.mapper.ProfileMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -50,39 +49,5 @@ public class EmailService implements MessageService {
         return "email";
     }
 
-
-    private String buildEmailBody(Profile userProfile, LocationDto currentLocation) {
-        String fullName = userProfile.getFullName();
-        String dateOfBirth = getFormattedDateOfBirth(userProfile);
-        String address = getFormattedAddress(userProfile);
-        String locationText = getFormattedLocationText(currentLocation);
-        String medicalHistoryText = getFormattedMedicalHistory(userProfile);
-
-        return String.format(
-                """
-                Olá,
-        
-                %s acionou um pedido de ajuda no aplicativo MAVIS. Você está recebendo esta mensagem porque foi cadastrado como contato de emergência dele(a).
-        
-                Abaixo estão as informações mais recentes de %s:
-        
-                - 📅 Data de Nascimento: %s
-                - 🏠 Endereço: %s
-                - 📍 Localização Atual: %s
-                
-                🏥 Informações Médicas:
-                %s
-        
-                ⚠️ Por favor, tente entrar em contato com %s imediatamente para verificar a situação.
-                Se não conseguir contato e houver indícios de perigo, acione os serviços de emergência.
-        
-                Obrigado por estar disponível para ajudar!
-        
-                Atenciosamente,
-                Equipe MAVIS
-                """,
-                fullName, fullName, dateOfBirth, address, locationText, medicalHistoryText, fullName
-        );
-    }
 
 }
