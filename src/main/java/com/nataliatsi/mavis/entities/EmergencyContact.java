@@ -25,7 +25,7 @@ public class EmergencyContact {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
 }
