@@ -32,6 +32,7 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.springframework.boot:spring-boot-starter-mail:3.3.4'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
+	implementation 'com.twilio.sdk:twilio:10.6.10'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
