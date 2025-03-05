@@ -1,6 +1,5 @@
 package com.nataliatsi.mavis.controller;
 
-import com.nataliatsi.mavis.dto.AddressDto;
 import com.nataliatsi.mavis.dto.CreateProfileDto;
 import com.nataliatsi.mavis.dto.GetProfileDto;
 import com.nataliatsi.mavis.dto.UpdateProfileDto;

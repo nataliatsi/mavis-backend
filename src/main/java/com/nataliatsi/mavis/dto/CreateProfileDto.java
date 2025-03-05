@@ -23,9 +23,6 @@ public record CreateProfileDto(
         @NotNull(message = "Endereço é obrigatório")
         AddressDto address,
 
-        @NotNull(message = "A localização é obrigatória")
-        LocationDto location,
-
         @NotEmpty(message = "Deve haver pelo menos um contato de emergência")
         List<@Valid EmergencyContactDto> emergencyContacts
 

@@ -9,7 +9,6 @@ public record GetProfileDto(
         LocalDate dateOfBirth,
         String phoneNumber,
         AddressDto address,
-        LocationDto location,
         List<GetEmergencyContactDto> emergencyContacts,
         List<GetMedicalHistoryDto> medicalHistory
 ) {}
