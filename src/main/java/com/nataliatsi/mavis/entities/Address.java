@@ -40,8 +40,4 @@ public class Address {
     @Column(name = "reference_point")
     private String referencePoint;
 
-    @OneToOne(mappedBy = "address")
-    @JsonBackReference
-    private Profile Profile;
-
 }
