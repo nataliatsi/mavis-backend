@@ -1,6 +1,7 @@
 package com.nataliatsi.mavis.controller;
 
 import com.nataliatsi.mavis.security.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @SecurityRequirement(name = "basicAuth")
     @PostMapping
     public ResponseEntity<?> authenticate(Authentication authentication) {
         String token = authenticationService.authenticate(authentication);

@@ -41,3 +41,6 @@ out/
 
 src/main/resources/app.key
 src/main/resources/app.pub
+
+compose.yml
+src/main/resources/application.properties
