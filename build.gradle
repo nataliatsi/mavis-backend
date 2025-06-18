@@ -23,6 +23,11 @@ repositories {
 	mavenCentral()
 }
 
+test {
+	systemProperty 'spring.profiles.active', 'test'
+}
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -43,6 +48,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'com.h2database:h2:2.3.232'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
