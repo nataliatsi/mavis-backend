@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record AddressDto(
+public record AddressRequestDTO(
         @NotBlank(message = "Rua é obrigatória")
         @Size(max = 100, message = "Rua pode ter no máximo 100 caracteres")
         String street,
