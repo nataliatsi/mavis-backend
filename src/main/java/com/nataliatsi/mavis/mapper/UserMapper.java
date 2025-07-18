@@ -1,15 +1,19 @@
 package com.nataliatsi.mavis.mapper;
 
-import com.nataliatsi.mavis.dto.UserRegisterDto;
+import com.nataliatsi.mavis.dto.AddressRequestDTO;
+import com.nataliatsi.mavis.dto.UserRequestDTO;
+import com.nataliatsi.mavis.entities.Address;
 import com.nataliatsi.mavis.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    // UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    User toEntity(UserRequestDTO dto);
 
-    @Mapping(target = "password", ignore = true)
-    User toUser(UserRegisterDto userRegister);
+    @Mapping(target = "id", ignore = true)
+    Address toAddress(AddressRequestDTO dto);
 }
