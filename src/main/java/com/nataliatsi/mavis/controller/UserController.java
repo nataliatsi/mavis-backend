@@ -1,6 +1,6 @@
 package com.nataliatsi.mavis.controller;
 
-import com.nataliatsi.mavis.dto.UserRegisterDto;
+import com.nataliatsi.mavis.dto.UserRequestDTO;
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.service.UserService;
 import jakarta.validation.Valid;
@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,13 +24,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDto userRegisterDto) {
-        try {
-            User user = userService.registerUser(userRegisterDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error registering user: " + e.getMessage());
-        }
+    public ResponseEntity<?> register(@RequestBody @Valid UserRequestDTO dto) {
+        User user = userService.create(dto);
+        URI location = URI.create("/api/users/" + user.getUserId());
+
+        return ResponseEntity.created(location).build();
     }
 
 }

@@ -1,8 +1,9 @@
 package com.nataliatsi.mavis.service;
 
-import com.nataliatsi.mavis.dto.UserRegisterDto;
+import com.nataliatsi.mavis.dto.UserRequestDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
+import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
 import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
@@ -30,26 +31,17 @@ public class UserService {
     }
 
     @Transactional
-    public User registerUser(UserRegisterDto userRegisterDto) {
-        String encryptedPassword = passwordEncoder.encode(userRegisterDto.password());
-        Role basicRole = roleRepository.findByName(Role.Values.BASIC.name());
+    public User create(UserRequestDTO dto) {
+        String encryptedPassword = passwordEncoder.encode(dto.password());
+        Role basicRole = roleRepository.findByName(Role.Values.BASIC.name()).orElseThrow();
 
-        if (basicRole == null) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Role BASIC não encontrada");
-        }
-        System.out.println("Role encontrada: " + basicRole.getName());
+        if (userRepository.findByUsername(dto.username()).isPresent()) throw new UserAlreadyExistsException("User already exists.");
 
-        var userFromDb = userRepository.findByUsername(userRegisterDto.username());
-        if(userFromDb.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        User user = userMapper.toUser(userRegisterDto);
+        User user = userMapper.toEntity(dto);
         user.setPassword(encryptedPassword);
         user.setRoles(Set.of(basicRole));
 
         user = userRepository.save(user);
-
         return user;
     }
 }
