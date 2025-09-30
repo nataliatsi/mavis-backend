@@ -23,20 +23,18 @@ public class Appointment {
     @Column(name = "professional_name")
     private String professionalName;
 
-    @Column(name = "specialty")
     private String specialty;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "appointment_location")
+    private String appointmentLocation;
 
     @Column(name = "appointment_date")
     private LocalDate date;
 
-    @Column(name = "notes")
     private String notes;
 
     @ManyToOne
-    @JoinColumn(name = "medical_history_id")
-    private MedicalHistory medicalHistory;
+    @JoinColumn(name = "health_profile_id")
+    private HealthProfile healthProfile;
 }
 

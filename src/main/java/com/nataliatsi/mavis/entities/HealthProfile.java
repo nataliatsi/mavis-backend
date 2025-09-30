@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,16 @@ public class HealthProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @Column(name = "blood_type")
     private String bloodType;
@@ -41,19 +52,9 @@ public class HealthProfile {
     @Column(name = "disease")
     private List<String> familyGeneticDiseases = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "health_profile_important_vaccines", joinColumns = @JoinColumn(name = "health_profile_id"))
-    @Column(name = "vaccine")
-    private List<String> importantVaccines = new ArrayList<>();
-
     private Boolean smoker;
 
     private Boolean alcoholic;
-
-    @ElementCollection
-    @CollectionTable(name = "health_profile_dietary_restrictions", joinColumns = @JoinColumn(name = "health_profile_id"))
-    @Column(name = "restriction")
-    private List<String> dietaryRestrictions = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "user_id")
