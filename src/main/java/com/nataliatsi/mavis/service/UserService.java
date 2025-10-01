@@ -1,6 +1,6 @@
 package com.nataliatsi.mavis.service;
 
-import com.nataliatsi.mavis.dto.UserRequestDTO;
+import com.nataliatsi.mavis.dto.UserCreateDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
@@ -8,10 +8,9 @@ import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
 
@@ -31,17 +30,19 @@ public class UserService {
     }
 
     @Transactional
-    public User create(UserRequestDTO dto) {
+    public User create(UserCreateDTO dto) {
         String encryptedPassword = passwordEncoder.encode(dto.password());
         Role basicRole = roleRepository.findByName(Role.Values.BASIC.name()).orElseThrow();
-
-        if (userRepository.findByUsername(dto.username()).isPresent()) throw new UserAlreadyExistsException("User already exists.");
 
         User user = userMapper.toEntity(dto);
         user.setPassword(encryptedPassword);
         user.setRoles(Set.of(basicRole));
 
-        user = userRepository.save(user);
+        try {
+            user = userRepository.saveAndFlush(user);
+        } catch (DataIntegrityViolationException ex) {
+            throw new UserAlreadyExistsException("A user with this email, phone number or username already exists.");
+        }
         return user;
     }
 }
