@@ -1,4 +1,4 @@
-package com.nataliatsi.mavis.controller;
+package com.nataliatsi.mavis.integration.controller;
 
 import com.jayway.jsonpath.JsonPath;
 import com.nataliatsi.mavis.entities.Address;
@@ -56,24 +56,12 @@ public class AuthenticationControllerTest {
         role.setName(Role.Values.ADMIN.getName());
         role = roleRepository.save(role);
 
-        Address address = new Address();
-        address.setStreet("Rua das Flores");
-        address.setNumber("123B");
-        address.setNeighborhood("Centro");
-        address.setCity("São Paulo");
-        address.setState("SP");
-        address.setPostalCode("01000-000");
-        address.setReferencePoint("Próximo à padaria Pão de Mel");
-
         User user = new User();
         user.setUsername("admin");
         user.setEmail("admin@test.com");
-        user.setPhoneNumber("11999999999");
+        user.setPhoneNumber("+5511999999999");
         user.setPassword(passwordEncoder.encode("Test@1234"));
         user.setRoles(Set.of(role));
-        user.setFullName("Admin Test");
-        user.setBirthDate(LocalDate.of(1998, 3, 15));
-        user.setAddress(address);
         user.setCreatedAt(LocalDateTime.now());
 
         userRepository.save(user);
