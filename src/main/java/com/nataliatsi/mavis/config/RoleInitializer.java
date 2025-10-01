@@ -15,6 +15,7 @@ public class RoleInitializer {
             for (Role.Values value : Role.Values.values()) {
                 if (!roleRepository.existsByName(value.getName())) {
                     Role role = new Role();
+                    role.setRoleId(value.getRoleId());
                     role.setName(value.getName());
                     roleRepository.save(role);
                 }

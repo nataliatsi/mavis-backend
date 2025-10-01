@@ -9,12 +9,10 @@ import lombok.Getter;
 @Data
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private Long roleId;
     private String name;
 
-    @Getter
     public enum Values {
         ADMIN(1L),
         BASIC(2L);
@@ -27,6 +25,10 @@ public class Role {
 
         public String getName() {
             return name();
+        }
+
+        public Long getRoleId() {
+            return roleId;
         }
     }
 }
