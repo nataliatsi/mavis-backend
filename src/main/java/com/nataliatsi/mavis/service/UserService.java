@@ -21,28 +21,33 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final FindUser findUser;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, UserMapper userMapper, FindUser findUser) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.findUser = findUser;
     }
 
     @Transactional
     public User create(UserCreateDTO dto) {
+        Role basicRole = roleRepository.findByName(Role.Values.BASIC.name())
+                .orElseThrow();
+
         String encryptedPassword = passwordEncoder.encode(dto.password());
-        Role basicRole = roleRepository.findByName(Role.Values.BASIC.name()).orElseThrow();
 
         User user = userMapper.toEntity(dto);
         user.setPassword(encryptedPassword);
         user.setRoles(Set.of(basicRole));
 
         try {
-            user = userRepository.saveAndFlush(user);
+            return userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
-            throw new UserAlreadyExistsException("A user with this email, phone number or username already exists.");
+            throw new UserAlreadyExistsException(
+                    "A user with this email, phone number or username already exists."
+            );
         }
-        return user;
     }
 }
