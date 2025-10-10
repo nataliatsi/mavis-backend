@@ -4,9 +4,10 @@ import com.nataliatsi.mavis.dto.RoleDTO;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 public record UserCreateResponseDTO(
-        String userId,
+        UUID userId,
         String username,
         String email,
         String phoneNumber,
