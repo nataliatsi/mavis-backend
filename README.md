@@ -2,94 +2,194 @@
 
 ---
 
-A **API MAVIS** é o backend do sistema MAVIS, responsável pelo gerenciamento do perfil do usuário e informações essenciais para emergências.
-
-O projeto segue uma arquitetura baseada em camadas:
-- **Controller**: Camada responsável por receber requisições HTTP e retornar respostas.
-- **Service**: Contém a lógica de negócio da aplicação.
-- **Repository**: Interage diretamente com o banco de dados usando o Spring Data JPA.
-
-A API é desenvolvida em **Spring Boot** e utiliza **PostgreSQL** como banco de dados. Para simplificar a execução, os serviços são disponibilizados via **Docker Compose**.
-
----
-
-## Envio de Notificações de Emergência
-
-Ao realizar uma requisição `POST` para o endpoint `/api/notifications/send/`, a API acionará um pedido de ajuda (emergência), notificando os contatos de emergência do usuário. As notificações serão enviadas por e-mail, caso o contato tenha um endereço cadastrado, e via SMS para o número de telefone registrado. Esse mecanismo assegura que os contatos de emergência sejam informados de maneira rápida e eficiente em situações críticas.
+<p align="center">
+    <img src="https://img.shields.io/badge/Status-Em%20Refatoração-0080ff?style=flat">
+    <img src="https://img.shields.io/badge/Java-17-0080ff?style=flat&logo=java&logoColor=white">
+    <img src="https://img.shields.io/badge/Spring%20Boot-3.x-0080ff?style=flat&logo=spring-boot&logoColor=white">
+    <img src="https://img.shields.io/badge/PostgreSQL-0080ff?style=flat&logo=postgresql&logoColor=white">
+    <img src="https://img.shields.io/badge/Docker-0080ff?style=flat&logo=docker&logoColor=white">
+</p>
 
 ---
 
-## **Instruções de Execução da API MAVIS**
+## Sumário
 
-### 1. Clonar o Repositório
+* [Visão Geral](#visão-geral)
+* [Arquitetura](#arquitetura)
+* [Endpoints da API](#endpoints-da-api)
+* [Autenticação](#autenticação)
+* [Validação dos Dados](#validação-dos-dados)
+* [Como Executar](#como-executar)
 
-Antes de gerar as chaves RSA, é necessário clonar o repositório do projeto:
+    * [Pré-requisitos](#pré-requisitos)
+    * [Gerar Chaves RSA](#gerar-chaves-rsa)
+    * [Executando com Docker Compose](#executando-com-docker-compose)
+    * [Testando a Aplicação](#testando-a-aplicação)
+* [Documentação da API](#documentação-da-api)
+* [Desenvolvedores](#desenvolvedores)
+
+---
+
+## Visão Geral
+
+A **API MAVIS** é o backend do sistema **Medical Assistance Vital Information System**, responsável pelo gerenciamento de perfis de usuários e pelas notificações em situações de emergência.
+
+O sistema permite que o usuário acione um **pedido de ajuda**, enviando notificações aos contatos de emergência por **e-mail** e **SMS**, garantindo resposta rápida em situações críticas.
+
+---
+
+## Arquitetura
+
+A API MAVIS segue uma **arquitetura em camadas**, promovendo **organização, reuso e separação de responsabilidades**:
+
+* **Controller** → recebe as requisições HTTP e retorna as respostas adequadas.
+* **Service** → implementa a lógica de negócio da aplicação.
+* **Repository** → lida com a persistência e o acesso aos dados usando **Spring Data JPA**.
+
+O projeto é desenvolvido em **Spring Boot** com **PostgreSQL** como banco de dados, e a execução é facilitada por **Docker Compose**.
+
+---
+
+## Endpoints da API
+
+| Método    | Endpoint                  | Descrição                                                 | Autenticação   |
+| --------- |---------------------------| --------------------------------------------------------- | -------------- |
+| **POST**  | `/api/v2/users`           | Cria um novo usuário                                      | ❌ Não requer   |
+| **POST**  | `/api/login`              | Autentica o usuário e retorna um token JWT                | ✅ Basic Auth   |
+| **PATCH** | `/api/v2/users/password`  | Altera a senha do usuário autenticado                     | ✅ Bearer Token |
+
+---
+
+## Autenticação
+
+A segurança da API é garantida por **Spring Security** e **JWT assinado com RSA**.
+
+### Fluxo de autenticação
+
+1. O usuário realiza login com **Basic Auth** (`email` e `senha`).
+2. Se as credenciais forem válidas, a API retorna um **token JWT**.
+3. Esse token deve ser incluído nas requisições subsequentes no cabeçalho:
+
+```
+Authorization: Bearer SEU_TOKEN_JWT
+```
+
+### Geração das chaves RSA
+
+As chaves `app.key` (privada) e `app.pub` (pública) são usadas para **assinar e validar o JWT**.
+Elas devem ser armazenadas em `src/main/resources`.
+
+---
+
+## Validação dos Dados
+
+A API utiliza **Jakarta Bean Validation** para garantir integridade e consistência nas entradas de dados.
+
+* Os DTOs (Data Transfer Objects) contêm anotações como `@NotNull`, `@Email`, `@Size`, entre outras.
+* A validação ocorre automaticamente antes da execução dos serviços.
+* Erros de validação retornam respostas claras com mensagens amigáveis.
+
+Exemplo:
+
+```json
+{
+  "timestamp": "2025-10-10T12:34:56",
+  "status": 400,
+  "errors": ["O campo 'email' é obrigatório e deve estar em formato válido."]
+}
+```
+
+---
+
+## Como Executar
+
+### Pré-requisitos
+
+Antes de iniciar, instale e configure:
+
+* **Java 17+**
+* **Docker e Docker Compose**
+* **OpenSSL** (para gerar as chaves RSA)
+
+### Gerar Chaves RSA
+
+1. Gere a chave privada:
+
+```bash
+openssl genrsa -out src/main/resources/app.key
+```
+
+2. Gere a chave pública:
+
+```bash
+openssl rsa -in src/main/resources/app.key -pubout -out src/main/resources/app.pub
+```
+
+---
+
+### Executando com Docker Compose
+
+Clone o repositório e entre no diretório do projeto:
 
 ```bash
 git clone https://github.com/nataliatsi/mavis-backend.git
 cd mavis
 ```
 
----
-
-### 2. Gerar Chaves RSA
-
-Para garantir a segurança das autenticações, gere as chaves RSA da seguinte maneira:
-
-#### Gerar a Chave Privada
-
-Execute o comando abaixo para gerar uma chave privada e salvar no arquivo `app.key` dentro do diretório `src/main/resources/`:
-
-```bash
-openssl genrsa -out src/main/resources/app.key
-```
-
-#### Derivar a Chave Pública
-
-Com a chave privada gerada, derive a chave pública e salve no arquivo `app.pub` dentro do mesmo diretório:
-
-```bash
-openssl rsa -in src/main/resources/app.key -pubout -out src/main/resources/app.pub
-```
-
-**Importante**: As chaves devem ser chamadas `app.key` (privada) e `app.pub` (pública), e devem ser armazenadas no diretório `src/main/resources`.
-
----
-
-### 3. Executar a API com Docker Compose
-
-Agora, a execução da API e do banco de dados é feita de forma simplificada com **Docker Compose**.
-
-### Construir e subir os serviços
+Construa e suba os serviços:
 
 ```bash
 docker-compose up --build -d
 ```
 
-Isso irá:
-- Construir e rodar a API MAVIS.
-- Iniciar o banco de dados PostgreSQL.
+A API estará disponível em:
 
-A API estará acessível em `http://localhost:8080`.
+👉 [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## Dependências
+### Testando a Aplicação
 
-Para o funcionamento correto do envio de notificações, é necessário configurar os seguintes serviços externos:
-- **[Twilio](https://www.twilio.com/pt-br)**: Utilizado para o envio de mensagens SMS. 
-- **[Mailtrap](https://mailtrap.io/)**: Utilizado para o envio de e-mails em ambiente de teste. 
+A MAVIS utiliza **Gradle Wrapper (`gradlew`)** para execução dos testes automatizados.
 
-É importante seguir as instruções de cada serviço para configurar corretamente as variáveis de ambiente com suas credenciais.
+Execute os testes com:
+
+```bash
+./gradlew test
+```
+
+Para limpar e testar novamente:
+
+```bash
+./gradlew clean test
+```
 
 ---
 
-## **Desenvolvedores**
+## Documentação da API
+
+Após iniciar a aplicação, acesse o **Swagger UI**:
+
+🔗 **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
+
+Aqui é possível visualizar e testar os endpoints disponíveis diretamente pelo navegador.
+
+---
+
+## Desenvolvedores
 
 Este projeto foi desenvolvido por:
 
-- **[Backend - Natália Gomes](https://github.com/nataliatsi)**
-- **[Frontend - João Igor](https://github.com/ignizxl)**
+* **Backend — [Natália Gomes](https://github.com/nataliatsi)**
+* **Frontend — [João Igor](https://github.com/ignizxl)**
+
+---
+
+<div align="center">
+
+[↑ **Voltar ao topo** ↑](#mavis--medical-assistance-vital-information-system)
+
+</div>
 
 
 
