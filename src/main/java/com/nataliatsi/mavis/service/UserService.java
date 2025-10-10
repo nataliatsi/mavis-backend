@@ -1,6 +1,7 @@
 package com.nataliatsi.mavis.service;
 
-import com.nataliatsi.mavis.dto.UserCreateDTO;
+import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
+import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
@@ -32,7 +33,7 @@ public class UserService {
     }
 
     @Transactional
-    public User create(UserCreateDTO dto) {
+    public UserCreateResponseDTO create(UserCreateRequestDTO dto) {
         Role basicRole = roleRepository.findByName(Role.Values.BASIC.name())
                 .orElseThrow();
 
@@ -43,7 +44,8 @@ public class UserService {
         user.setRoles(Set.of(basicRole));
 
         try {
-            return userRepository.save(user);
+            user = userRepository.saveAndFlush(user);
+            return userMapper.toCreateResponse(user);
         } catch (DataIntegrityViolationException ex) {
             throw new UserAlreadyExistsException(
                     "A user with this email, phone number or username already exists."
