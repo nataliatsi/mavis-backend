@@ -1,7 +1,8 @@
 package com.nataliatsi.mavis.controller;
 
-import com.nataliatsi.mavis.dto.UserCreateDTO;
-import com.nataliatsi.mavis.entities.User;
+import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
+import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
+import com.nataliatsi.mavis.service.FindUser;
 import com.nataliatsi.mavis.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +22,11 @@ import java.net.URI;
 @Tag(name = "User", description = "Endpoints for user management")
 public class UserController {
     private final UserService userService;
+    private final FindUser findUser;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, FindUser findUser) {
         this.userService = userService;
+        this.findUser = findUser;
     }
 
     @Operation(
@@ -42,11 +45,10 @@ public class UserController {
                     )}
     )
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDTO dto) {
-        User user = userService.create(dto);
-        URI location = URI.create("/api/v2/users/" + user.getUserId());
+    public ResponseEntity<UserCreateResponseDTO> createUser(@Valid @RequestBody UserCreateRequestDTO dto) {
+        UserCreateResponseDTO response = userService.create(dto);
+        URI location = URI.create("/api/v2/users/" + response.userId());
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(response);
     }
-
 }
