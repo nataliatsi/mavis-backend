@@ -1,6 +1,8 @@
 package com.nataliatsi.mavis.unit;
 
-import com.nataliatsi.mavis.dto.UserCreateDTO;
+import com.nataliatsi.mavis.dto.RoleDTO;
+import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
+import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
@@ -15,11 +17,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,13 +48,14 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    private UserCreateDTO dto;
+    private UserCreateRequestDTO requestDTO;
     private Role basicRole;
+    private final RoleDTO basicRoleDTO = new RoleDTO("BASIC");
     private User userEntity;
 
     @BeforeEach
     void setUp() {
-        dto = new UserCreateDTO(
+        requestDTO = new UserCreateRequestDTO(
                 "usertest",
                 "test@example.com",
                 "+5511900002222",
@@ -72,33 +78,46 @@ public class UserServiceTest {
     @DisplayName("Should return a saved user when DTO is valid")
     public void create_ShouldReturnUser_WhenDtoIsValid() {
 
-        when(passwordEncoder.encode(dto.password())).thenReturn("encodedPass");
+        when(passwordEncoder.encode(requestDTO.password())).thenReturn("encodedPass");
         when(roleRepository.findByName("BASIC")).thenReturn(java.util.Optional.of(basicRole));
-        when(userMapper.toEntity(dto)).thenReturn(userEntity);
-        when(userRepository.save(any(User.class))).thenReturn(userEntity);
+        when(userMapper.toEntity(requestDTO)).thenReturn(userEntity);
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(userEntity);
 
-        User result = userService.create(dto);
+        UserCreateResponseDTO responseDTO = new UserCreateResponseDTO(
+                UUID.randomUUID(),
+                "usertest",
+                "test@example.com",
+                "+5511900002222",
+                Set.of(basicRoleDTO),
+                LocalDateTime.now()
+        );
 
-        assertEquals("usertest", result.getUsername());
-        assertEquals("test@example.com", result.getEmail());
-        assertEquals("+5511900002222", result.getPhoneNumber());
-        assertEquals(Set.of(basicRole), result.getRoles());
+        when(userMapper.toCreateResponse(any(User.class))).thenReturn(responseDTO);
 
-        verify(userRepository, times(1)).save(any(User.class));
+        UserCreateResponseDTO result = userService.create(requestDTO);
+
+        assertEquals("usertest", result.username());
+        assertEquals("test@example.com", result.email());
+        assertEquals("+5511900002222", result.phoneNumber());
+        assertEquals(Set.of(basicRoleDTO), result.roles());
+
+        verify(userRepository, times(1)).saveAndFlush(any(User.class));
     }
 
     @Test
     @DisplayName("Should throw exception when email already exists")
     public void create_ShouldThrowException_WhenEmailAlreadyExists() {
 
-        when(passwordEncoder.encode(dto.password())).thenReturn("encodedPass");
+        when(passwordEncoder.encode(requestDTO.password())).thenReturn("encodedPass");
         when(roleRepository.findByName("BASIC")).thenReturn(java.util.Optional.of(basicRole));
-        when(userMapper.toEntity(dto)).thenReturn(userEntity);
+        when(userMapper.toEntity(requestDTO)).thenReturn(userEntity);
 
-        when(userRepository.save(any(User.class))).thenThrow(new org.springframework.dao.DataIntegrityViolationException("Duplicate entry"));
+        when(userRepository.saveAndFlush(any(User.class)))
+                .thenThrow(new DataIntegrityViolationException("Duplicate entry"));
 
-        assertThrows(UserAlreadyExistsException.class, () -> userService.create(dto));
-        verify(userRepository, times(1)).save(any(User.class));
+
+        assertThrows(UserAlreadyExistsException.class, () -> userService.create(requestDTO));
+        verify(userRepository, times(1)).saveAndFlush(any(User.class));
     }
 
     @Test
@@ -107,8 +126,8 @@ public class UserServiceTest {
 
         when(roleRepository.findByName("BASIC")).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> userService.create(dto));
+        assertThrows(NoSuchElementException.class, () -> userService.create(requestDTO));
 
-        verify(userRepository, times(0)).save(any(User.class));
+        verify(userRepository, times(0)).saveAndFlush(any(User.class));
     }
 }
