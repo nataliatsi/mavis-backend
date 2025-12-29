@@ -4,12 +4,16 @@ import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
 import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
+import com.nataliatsi.mavis.exception.BadRequestException;
+import com.nataliatsi.mavis.exception.InvalidPasswordException;
+import com.nataliatsi.mavis.exception.RoleNotFoundException;
 import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
 import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +39,7 @@ public class UserService {
     @Transactional
     public UserCreateResponseDTO create(UserCreateRequestDTO dto) {
         Role basicRole = roleRepository.findByName(Role.Values.BASIC.name())
-                .orElseThrow();
+                .orElseThrow(() -> new RoleNotFoundException("Basic role not found"));
 
         String encryptedPassword = passwordEncoder.encode(dto.password());
 
@@ -50,6 +54,30 @@ public class UserService {
             throw new UserAlreadyExistsException(
                     "A user with this email, phone number or username already exists."
             );
+        }
+    }
+
+    @Transactional
+    public void updatePassword(String oldPassword, String newPassword, Authentication authentication) {
+        User user = findUser.getAuthenticatedUser(authentication);
+        validatePasswords(oldPassword, newPassword, user);
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    private void validatePasswords(String oldPassword, String newPassword, User user) {
+        if (oldPassword == null || oldPassword.isBlank()) {
+            throw new BadRequestException("Old password cannot be null or blank");
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new BadRequestException("New password cannot be null or blank");
+        }
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new InvalidPasswordException("Old password does not match");
+        }
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new InvalidPasswordException("New password cannot be the same as the old password");
         }
     }
 }
