@@ -1,12 +1,14 @@
 package com.nataliatsi.mavis.service;
 
 import com.nataliatsi.mavis.dto.RoleDTO;
+import com.nataliatsi.mavis.dto.user.PasswordUpdateRequestDTO;
 import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
 import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
 import com.nataliatsi.mavis.exception.RoleNotFoundException;
 import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
+import com.nataliatsi.mavis.exception.UserNotFoundException;
 import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
@@ -18,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -43,6 +46,12 @@ public class UserServiceTest {
 
     @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private FindUser findUser;
+
+    @Mock
+    private Authentication authentication;
 
     @InjectMocks
     private UserService userService;
@@ -75,7 +84,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should return a saved user when DTO is valid")
-    public void create_ShouldReturnUser_WhenDtoIsValid() {
+    void create_ShouldReturnUser_WhenDtoIsValid() {
 
         when(passwordEncoder.encode(requestDTO.password())).thenReturn("encodedPass");
         when(roleRepository.findByName("BASIC")).thenReturn(java.util.Optional.of(basicRole));
@@ -105,7 +114,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw exception when email already exists")
-    public void create_ShouldThrowException_WhenEmailAlreadyExists() {
+    void create_ShouldThrowException_WhenEmailAlreadyExists() {
 
         when(passwordEncoder.encode(requestDTO.password())).thenReturn("encodedPass");
         when(roleRepository.findByName("BASIC")).thenReturn(java.util.Optional.of(basicRole));
@@ -121,7 +130,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Should throw RoleNotFoundException when BASIC role not found")
-    public void create_ShouldThrowException_WhenRoleDoesNotFound() {
+    void create_ShouldThrowException_WhenRoleDoesNotFound() {
 
         when(roleRepository.findByName("BASIC")).thenReturn(Optional.empty());
 
@@ -168,5 +177,25 @@ public class UserServiceTest {
 
         verify(userRepository, times(1))
                 .saveAndFlush(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Should update the password when the user is authenticated, the old password matches, and the new password is valid.")
+    void update_ShouldUpdatePassword_WhenUserIsAuthenticatedAndOldPasswordMatchesAndNewPasswordIsValid(){
+        String oldPassword = "Password@123";
+        String newPassword = "newPassword@123";
+        String encodedNewPassword = "encodedNewPassword";
+
+        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
+        when(passwordEncoder.matches(oldPassword, userEntity.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn(encodedNewPassword);
+
+        userService.updatePassword(oldPassword, newPassword, authentication);
+
+        assertEquals(encodedNewPassword, userEntity.getPassword());
+
+        verify(findUser, times(1)).getAuthenticatedUser(authentication);
+        verify(passwordEncoder, times(1)).encode(newPassword);
+        verify(userRepository, times(1)).save(userEntity);
     }
 }
