@@ -1,15 +1,15 @@
-package com.nataliatsi.mavis.unit;
+package com.nataliatsi.mavis.service;
 
 import com.nataliatsi.mavis.dto.RoleDTO;
 import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
 import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
+import com.nataliatsi.mavis.exception.RoleNotFoundException;
 import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
 import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
-import com.nataliatsi.mavis.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -121,13 +120,53 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw exception when BASIC role not found")
+    @DisplayName("Should throw RoleNotFoundException when BASIC role not found")
     public void create_ShouldThrowException_WhenRoleDoesNotFound() {
 
         when(roleRepository.findByName("BASIC")).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> userService.create(requestDTO));
+        assertThrows(RoleNotFoundException.class, () -> userService.create(requestDTO));
 
         verify(userRepository, times(0)).saveAndFlush(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Should propagate exception when password encryption fails")
+    void create_ShouldThrowException_WhenPasswordEncryptionFails() {
+
+        when(passwordEncoder.encode(requestDTO.password()))
+                .thenThrow(new IllegalArgumentException("Encryption failed"));
+
+        when(roleRepository.findByName("BASIC"))
+                .thenReturn(Optional.of(basicRole));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.create(requestDTO));
+
+        verify(userRepository, never())
+                .saveAndFlush(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Should propagate exception when unexpected persistence error occurs")
+    void create_ShouldThrowException_WhenUnexpectedPersistenceErrorOccurs() {
+
+        when(passwordEncoder.encode(requestDTO.password()))
+                .thenReturn("encodedPass");
+
+        when(roleRepository.findByName("BASIC"))
+                .thenReturn(Optional.of(basicRole));
+
+        when(userMapper.toEntity(requestDTO))
+                .thenReturn(userEntity);
+
+        when(userRepository.saveAndFlush(any(User.class)))
+                .thenThrow(new RuntimeException("Unexpected DB error"));
+
+        assertThrows(RuntimeException.class,
+                () -> userService.create(requestDTO));
+
+        verify(userRepository, times(1))
+                .saveAndFlush(any(User.class));
     }
 }
