@@ -68,10 +68,10 @@ public class UserService {
 
     private void validatePasswords(String oldPassword, String newPassword, User user) {
         if (oldPassword == null || oldPassword.isBlank()) {
-            throw new BadRequestException("Old password cannot be null or blank");
+            throw new InvalidPasswordException("Old password cannot be null or blank");
         }
         if (newPassword == null || newPassword.isBlank()) {
-            throw new BadRequestException("New password cannot be null or blank");
+            throw new InvalidPasswordException("New password cannot be null or blank");
         }
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new InvalidPasswordException("Old password does not match");
