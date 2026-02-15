@@ -6,9 +6,7 @@ import com.nataliatsi.mavis.dto.user.UserCreateRequestDTO;
 import com.nataliatsi.mavis.dto.user.UserCreateResponseDTO;
 import com.nataliatsi.mavis.entities.Role;
 import com.nataliatsi.mavis.entities.User;
-import com.nataliatsi.mavis.exception.RoleNotFoundException;
-import com.nataliatsi.mavis.exception.UserAlreadyExistsException;
-import com.nataliatsi.mavis.exception.UserNotFoundException;
+import com.nataliatsi.mavis.exception.*;
 import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
@@ -16,6 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -197,5 +198,63 @@ public class UserServiceTest {
         verify(findUser, times(1)).getAuthenticatedUser(authentication);
         verify(passwordEncoder, times(1)).encode(newPassword);
         verify(userRepository, times(1)).save(userEntity);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   "})
+    @DisplayName("Should throw InvalidPasswordException when current password is null or blank")
+    void shouldThrowInvalidPasswordException_whenOldPasswordIsNullOrBlank(String oldPassword) {
+        String newPassword = "newPassword@123";
+
+        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
+
+        assertThrows(InvalidPasswordException.class,
+                () -> userService.updatePassword(oldPassword, newPassword, authentication));
+
+        verifyNoInteractions(passwordEncoder);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   "})
+    @DisplayName("Should throw InvalidPasswordException when new password is null or blank")
+    void shouldThrowInvalidPasswordException_whenNewPasswordIsNullOrBlank(String newPassword) {
+        String oldPassword = "Password@123";
+
+        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
+
+        assertThrows(InvalidPasswordException.class,
+                () -> userService.updatePassword(oldPassword, newPassword, authentication));
+
+        verifyNoInteractions(passwordEncoder);
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidPasswordException when current password does not match")
+    void shouldThrowInvalidPasswordException_whenOldPasswordDoesNotMatch() {
+        String oldPassword = "Password@123";
+        String newPassword = "newPassword@123";
+
+        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
+        when(passwordEncoder.matches(oldPassword, userEntity.getPassword())).thenReturn(false);
+
+        assertThrows(InvalidPasswordException.class,
+                () -> userService.updatePassword(oldPassword, newPassword, authentication));
+
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidPasswordException when new password equals current password")
+    void shouldThrowInvalidPasswordException_whenNewPasswordEqualsOldPassword() {
+        String oldPassword = "Password@123";
+        String newPassword = "Password@123";
+
+        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
+        when(passwordEncoder.matches(oldPassword, userEntity.getPassword())).thenReturn(true);
+        when(passwordEncoder.matches(newPassword, userEntity.getPassword())).thenReturn(true);
+
+        assertThrows(InvalidPasswordException.class,
+                () -> userService.updatePassword(oldPassword, newPassword, authentication));
     }
 }
