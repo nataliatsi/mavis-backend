@@ -12,6 +12,7 @@ import com.nataliatsi.mavis.mapper.UserMapper;
 import com.nataliatsi.mavis.repository.RoleRepository;
 import com.nataliatsi.mavis.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -67,12 +68,6 @@ public class UserService {
     }
 
     private void validatePasswords(String oldPassword, String newPassword, User user) {
-        if (oldPassword == null || oldPassword.isBlank()) {
-            throw new InvalidPasswordException("Old password cannot be null or blank");
-        }
-        if (newPassword == null || newPassword.isBlank()) {
-            throw new InvalidPasswordException("New password cannot be null or blank");
-        }
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new InvalidPasswordException("Old password does not match");
         }

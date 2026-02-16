@@ -200,36 +200,6 @@ public class UserServiceTest {
         verify(userRepository, times(1)).save(userEntity);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"   "})
-    @DisplayName("Should throw InvalidPasswordException when current password is null or blank")
-    void shouldThrowInvalidPasswordException_whenOldPasswordIsNullOrBlank(String oldPassword) {
-        String newPassword = "newPassword@123";
-
-        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
-
-        assertThrows(InvalidPasswordException.class,
-                () -> userService.updatePassword(oldPassword, newPassword, authentication));
-
-        verifyNoInteractions(passwordEncoder);
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"   "})
-    @DisplayName("Should throw InvalidPasswordException when new password is null or blank")
-    void shouldThrowInvalidPasswordException_whenNewPasswordIsNullOrBlank(String newPassword) {
-        String oldPassword = "Password@123";
-
-        when(findUser.getAuthenticatedUser(authentication)).thenReturn(userEntity);
-
-        assertThrows(InvalidPasswordException.class,
-                () -> userService.updatePassword(oldPassword, newPassword, authentication));
-
-        verifyNoInteractions(passwordEncoder);
-    }
-
     @Test
     @DisplayName("Should throw InvalidPasswordException when current password does not match")
     void shouldThrowInvalidPasswordException_whenOldPasswordDoesNotMatch() {
